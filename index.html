@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aether Weather</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container-fluid app-container py-4 px-lg-5">
+
+        <!-- Header -->
+        <header class="d-flex justify-content-between align-items-center mb-4 px-3">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-clouds-fill fs-3 text-primary-gold"></i>
+                <h1 class="h4 mb-0 fw-bold">Aether Weather</h1>
+            </div>
+            <div class="search-bar-container position-relative">
+                <form id="weatherForm" class="m-0 p-0">
+                    <div class="input-group search-glass">
+                        <span class="input-group-text border-0 bg-transparent text-white-50">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="search" class="form-control border-0 bg-transparent text-white shadow-none"
+                            placeholder="Search city..." id="searchInput" autocomplete="off">
+                        <span class="input-group-text border-0 bg-transparent text-white-50">
+                            <button type="submit" class="bg-transparent border-0 text-white-50 p-0 m-0"><i
+                                    class="bi bi-search"></i></button>
+                        </span>
+                    </div>
+                    <!-- Suggestions Dropdown -->
+                    <ul class="dropdown-menu w-100 glass-card border-0 mt-2 p-2 shadow" id="searchSuggestions"
+                        style="position: absolute; z-index: 1000; top: 100%; backdrop-filter: blur(25px); background: var(--glass-elevated);">
+                    </ul>
+                </form>
+            </div>
+            <div>
+                <button class="btn btn-icon glass-btn rounded-circle" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#navMenu" aria-controls="navMenu">
+                    <i class="bi bi-list"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="row g-4 px-lg-3 view-section active" id="home-view">
+            <!-- Left Column: Main Weather Hero & Hourly Forecast -->
+            <div class="col-12 col-lg-8">
+
+                <!-- Hero Weather Card -->
+                <div class="glass-card rounded-4 p-4 p-md-5 mb-4 position-relative overflow-hidden hero-card">
+                    <!-- Background ambient glow -->
+                    <div class="ambient-glow"></div>
+
+                    <div class="row position-relative z-1 align-items-center">
+                        <div class="col-md-7">
+                            <h2 class="display-hero fw-light mb-0" id="currentTemp">23°</h2>
+                            <h3 class="h2 fw-semibold mb-1" id="currentCity">Lagos, NG</h3>
+                            <p class="text-secondary-light fs-5 mb-4" id="currentCondition">Partly Cloudy</p>
+
+                            <!-- Metrics Trio -->
+                            <div class="row g-3 mt-2 metrics-trio">
+                                <div class="col-4">
+                                    <div class="d-flex flex-column gap-1">
+                                        <i class="bi bi-cloud-rain text-accent fs-4"></i>
+                                        <span class="text-secondary-muted small text-uppercase">Precipitation</span>
+                                        <span class="fw-semibold" id="currentPrecip">12%</span>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="d-flex flex-column gap-1">
+                                        <i class="bi bi-droplet text-accent fs-4"></i>
+                                        <span class="text-secondary-muted small text-uppercase">Humidity</span>
+                                        <span class="fw-semibold" id="currentHumidity">65%</span>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="d-flex flex-column gap-1">
+                                        <i class="bi bi-wind text-accent fs-4"></i>
+                                        <span class="text-secondary-muted small text-uppercase">Wind</span>
+                                        <span class="fw-semibold" id="currentWind">14 km/h</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5 text-center d-none d-md-block">
+                            <i class="bi bi-cloud-sun hero-icon text-primary-gold"
+                                style="font-size: 8rem; filter: drop-shadow(0 0 30px rgba(251, 191, 36, 0.4));"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hourly Forecast -->
+                <div class="glass-card rounded-4 p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="h6 text-secondary-light mb-0">Today</h4>
+                        <a href="#" class="text-primary-gold text-decoration-none small">Next 48 Hours <i
+                                class="bi bi-chevron-right"></i></a>
+                    </div>
+
+                    <!-- Horizontal Scroll Container -->
+                    <div class="d-flex gap-3 overflow-x-auto pb-2 hourly-container custom-scrollbar">
+                        <!-- Hour Pill Active -->
+                        <div
+                            class="hourly-pill active d-flex flex-column align-items-center justify-content-between py-3">
+                            <span class="small text-secondary-light">Now</span>
+                            <i class="bi bi-cloud-sun-fill text-primary-gold fs-4 my-2"></i>
+                            <span class="fw-medium">23°</span>
+                        </div>
+                        <!-- Hour Pills -->
+                        <div class="hourly-pill d-flex flex-column align-items-center justify-content-between py-3">
+                            <span class="small text-secondary-muted">14:00</span>
+                            <i class="bi bi-cloud-sun text-white fs-4 my-2"></i>
+                            <span class="fw-medium">24°</span>
+                        </div>
+                        <div class="hourly-pill d-flex flex-column align-items-center justify-content-between py-3">
+                            <span class="small text-secondary-muted">15:00</span>
+                            <i class="bi bi-cloud text-white fs-4 my-2"></i>
+                            <span class="fw-medium">23°</span>
+                        </div>
+                        <div class="hourly-pill d-flex flex-column align-items-center justify-content-between py-3">
+                            <span class="small text-secondary-muted">16:00</span>
+                            <i class="bi bi-cloud-rain text-accent fs-4 my-2"></i>
+                            <span class="fw-medium">21°</span>
+                        </div>
+                        <div class="hourly-pill d-flex flex-column align-items-center justify-content-between py-3">
+                            <span class="small text-secondary-muted">17:00</span>
+                            <i class="bi bi-cloud-lightning text-primary-gold fs-4 my-2"></i>
+                            <span class="fw-medium">20°</span>
+                        </div>
+                        <div class="hourly-pill d-flex flex-column align-items-center justify-content-between py-3">
+                            <span class="small text-secondary-muted">18:00</span>
+                            <i class="bi bi-cloud-rain text-accent fs-4 my-2"></i>
+                            <span class="fw-medium">19°</span>
+                        </div>
+                        <div class="hourly-pill d-flex flex-column align-items-center justify-content-between py-3">
+                            <span class="small text-secondary-muted">19:00</span>
+                            <i class="bi bi-moon-stars text-white fs-4 my-2"></i>
+                            <span class="fw-medium">18°</span>
+                        </div>
+                        <div class="hourly-pill d-flex flex-column align-items-center justify-content-between py-3">
+                            <span class="small text-secondary-muted">20:00</span>
+                            <i class="bi bi-moon text-white fs-4 my-2"></i>
+                            <span class="fw-medium">17°</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: 7-Day Forecast & Minis -->
+            <div class="col-12 col-lg-4 d-flex flex-column gap-4">
+
+                <!-- 7-Day Forecast -->
+                <div class="glass-card rounded-4 p-4 flex-grow-1">
+                    <h4 class="h6 text-secondary-light mb-4">7-Day Forecast</h4>
+
+                    <div class="d-flex flex-column gap-3">
+                        <!-- Day Row -->
+                        <div class="d-flex align-items-center justify-content-between day-row pb-2">
+                            <span class="text-secondary-light fw-medium" style="width: 50px;">Today</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-cloud-sun-fill text-primary-gold"></i>
+                                <span class="small text-white">Partly Cloudy</span>
+                            </div>
+                            <span class="fw-semibold">17° <span class="text-secondary-muted ms-2">23°</span></span>
+                        </div>
+                        <!-- Day Row -->
+                        <div class="d-flex align-items-center justify-content-between day-row pb-2 border-top-glass">
+                            <span class="text-secondary-muted fw-medium" style="width: 50px;">Tue</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-cloud-rain text-accent"></i>
+                                <span class="small text-secondary-light">Rainy</span>
+                            </div>
+                            <span class="fw-semibold">15° <span class="text-secondary-muted ms-2">19°</span></span>
+                        </div>
+                        <!-- Day Row -->
+                        <div class="d-flex align-items-center justify-content-between day-row pb-2 border-top-glass">
+                            <span class="text-secondary-muted fw-medium" style="width: 50px;">Wed</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-cloud-lightning text-primary-gold"></i>
+                                <span class="small text-secondary-light">Storm</span>
+                            </div>
+                            <span class="fw-semibold">14° <span class="text-secondary-muted ms-2">18°</span></span>
+                        </div>
+                        <!-- Day Row -->
+                        <div class="d-flex align-items-center justify-content-between day-row pb-2 border-top-glass">
+                            <span class="text-secondary-muted fw-medium" style="width: 50px;">Thu</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-sun-fill text-primary-gold"></i>
+                                <span class="small text-secondary-light">Sunny</span>
+                            </div>
+                            <span class="fw-semibold">18° <span class="text-secondary-muted ms-2">25°</span></span>
+                        </div>
+                        <!-- Day Row -->
+                        <div class="d-flex align-items-center justify-content-between day-row pb-2 border-top-glass">
+                            <span class="text-secondary-muted fw-medium" style="width: 50px;">Fri</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-cloud-sun text-white"></i>
+                                <span class="small text-secondary-light">Mostly Clear</span>
+                            </div>
+                            <span class="fw-semibold">19° <span class="text-secondary-muted ms-2">26°</span></span>
+                        </div>
+                        <!-- Day Row -->
+                        <div class="d-flex align-items-center justify-content-between day-row pb-2 border-top-glass">
+                            <span class="text-secondary-muted fw-medium" style="width: 50px;">Sat</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-clouds text-white"></i>
+                                <span class="small text-secondary-light">Cloudy</span>
+                            </div>
+                            <span class="fw-semibold">17° <span class="text-secondary-muted ms-2">22°</span></span>
+                        </div>
+                        <!-- Day Row -->
+                        <div class="d-flex align-items-center justify-content-between day-row border-top-glass">
+                            <span class="text-secondary-muted fw-medium" style="width: 50px;">Sun</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-cloud-rain text-accent"></i>
+                                <span class="small text-secondary-light">Showers</span>
+                            </div>
+                            <span class="fw-semibold">16° <span class="text-secondary-muted ms-2">20°</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- City Overview Mini-Card -->
+                <div
+                    class="glass-card rounded-4 p-3 d-flex justify-content-between align-items-center interactive-card">
+                    <div>
+                        <h5 class="h6 mb-1 text-white">Abuja</h5>
+                        <div class="small text-secondary-light">11:18 AM</div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-sun-fill text-primary-gold fs-3"></i>
+                        <span class="fs-4 fw-semibold">28°</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Locations View -->
+        <div class="row g-4 px-lg-3 view-section" id="locationID">
+            <div class="col-12">
+                <div class="glass-card rounded-4 p-4">
+                    <h2 class="h4 mb-4">Saved Locations</h2>
+                    <div class="row g-3">
+                        <div class="col-md-6 col-lg-4">
+                            <div
+                                class="glass-card rounded-4 p-3 d-flex justify-content-between align-items-center interactive-card">
+                                <div>
+                                    <h5 class="h5 mb-1 text-white">Lagos, NG</h5>
+                                    <div class="small text-secondary-light">Current Location</div>
+                                </div>
+                                <div class="d-flex align-items-center gap-3">
+                                    <i class="bi bi-cloud-sun-fill text-primary-gold fs-2"></i>
+                                    <span class="fs-3 fw-semibold">23°</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div
+                                class="glass-card rounded-4 p-3 d-flex justify-content-between align-items-center interactive-card">
+                                <div>
+                                    <h5 class="h5 mb-1 text-white">Abuja, NG</h5>
+                                    <div class="small text-secondary-light">11:18 AM</div>
+                                </div>
+                                <div class="d-flex align-items-center gap-3">
+                                    <i class="bi bi-sun-fill text-primary-gold fs-2"></i>
+                                    <span class="fs-3 fw-semibold">28°</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div
+                                class="glass-card rounded-4 p-3 d-flex justify-content-between align-items-center interactive-card">
+                                <div>
+                                    <h5 class="h5 mb-1 text-white">London, UK</h5>
+                                    <div class="small text-secondary-light">10:18 AM</div>
+                                </div>
+                                <div class="d-flex align-items-center gap-3">
+                                    <i class="bi bi-cloud-rain-fill text-accent fs-2"></i>
+                                    <span class="fs-3 fw-semibold">12°</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn glass-btn w-100 mt-4 text-white interactive-card"
+                        style="border-radius: 1rem; height: auto; padding: 0.75rem;">
+                        <i class="bi bi-plus-lg me-2"></i> Add New Location
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings View -->
+        <div class="row g-4 px-lg-3 view-section" id="settings-view">
+            <div class="col-12 col-md-8 mx-auto">
+                <div class="glass-card rounded-4 p-4">
+                    <h2 class="h4 mb-4">Settings</h2>
+
+                    <div class="mb-4">
+                        <h6 class="text-secondary-light mb-3">Units</h6>
+                        <div class="d-flex gap-3">
+                            <button class="btn glass-btn text-white flex-grow-1 active"
+                                style="border-radius: 1rem; height: auto; padding: 0.75rem;">Celsius (°C)</button>
+                            <button class="btn glass-btn text-white flex-grow-1"
+                                style="border-radius: 1rem; height: auto; padding: 0.75rem;">Fahrenheit (°F)</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="text-secondary-light mb-3">Theme</h6>
+                        <div class="d-flex gap-3">
+                            <button class="btn glass-btn text-white flex-grow-1 active"
+                                style="border-radius: 1rem; height: auto; padding: 0.75rem;"><i
+                                    class="bi bi-moon-stars me-2"></i>Dark</button>
+                            <button class="btn glass-btn text-white flex-grow-1"
+                                style="border-radius: 1rem; height: auto; padding: 0.75rem;"><i
+                                    class="bi bi-sun me-2"></i>Light</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="text-secondary-light mb-3">Notifications</h6>
+                        <div class="form-check form-switch fs-5">
+                            <input class="form-check-input bg-transparent" type="checkbox" role="switch" id="rainAlerts"
+                                checked>
+                            <label class="form-check-label text-white ms-2" for="rainAlerts">Rain Alerts</label>
+                        </div>
+                        <div class="form-check form-switch fs-5 mt-3">
+                            <input class="form-check-input bg-transparent" type="checkbox" role="switch"
+                                id="dailySummary" checked>
+                            <label class="form-check-label text-white ms-2" for="dailySummary">Daily Summary</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Offcanvas Navigation Menu -->
+    <div class="offcanvas offcanvas-end glass-card text-white border-0" tabindex="-1" id="navMenu"
+        aria-labelledby="navMenuLabel" style="background: var(--glass-elevated); backdrop-filter: blur(25px);">
+        <div class="offcanvas-header border-bottom border-secondary">
+            <h5 class="offcanvas-title" id="navMenuLabel"><i class="bi bi-clouds-fill text-primary-gold me-2"></i>Aether
+                Weather</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="nav flex-column gap-2 fs-5">
+                <li class="nav-item">
+                    <a class="nav-link text-white nav-view-btn active" href="#" data-target="home-view"><i
+                            class="bi bi-house-door me-2"></i> Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white nav-view-btn" href="#" data-target="locations-view"><i
+                            class="bi bi-geo-alt me-2"></i> Saved Locations</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white nav-view-btn" href="#" data-target="settings-view"><i
+                            class="bi bi-gear me-2"></i> Settings</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
